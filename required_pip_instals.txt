@@ -1,0 +1,4 @@
+Required libraries:
+
+pip install pillow
+pip install customtkinter
