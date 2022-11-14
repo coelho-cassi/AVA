@@ -28,31 +28,32 @@ def main():
         quit()
     
     tempoList = []
-    y, sr = librosa.load(song)
-    x = librosa.get_duration(y=y,sr=sr)
+    y, sr = librosa.load(song)                      # Loads Song using the Librosa library
+    x = librosa.get_duration(y=y,sr=sr)             # Calculates Length of the mp3 file
     print("Total Length: ", x)
-    x1 = math.floor(x)
+    x1 = math.floor(x)                              # Remove Decimal from length value
     a = math.floor(x1 / interval_length)            # Determines the number of seqments
     b = x1 % interval_length                        # Determines the length of the final seqment  
                                                     # NOTE: (a*interval_length + b) = total length of mp3
                                                     
     print("Number of seqments : ", a,"\nExcess :", b, "seconds")
-    for i in range(1,a+1):
+    for i in range(1,a+1):                          # Splits the audio into 'a' segments
         temp = i*interval_length
         y, sr = librosa.load(song, offset=temp,duration=30)
         onset_env = librosa.onset.onset_strength(y=y,sr=sr)
         tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
-        tempoList.append(tempo[0])
-    y, sr = librosa.load(song, offset=temp, duration=b)
-    onset_env = librosa.onset.onset_strength(y=y,sr=sr)
-    tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
-    tempoList.append(tempo[0])
+        tempoList.append(tempo[0])                  # Appends current seqment BPM to List
+    if b != 0:
+        y, sr = librosa.load(song, offset=temp, duration=b)     # If b is not zero then the program will calculate
+        onset_env = librosa.onset.onset_strength(y=y,sr=sr)     # the BPM of the last seqment
+        tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
+        tempoList.append(tempo[0])                  # Appends final sequment BPM to List
     #print(tempoList)
-    nodups = [*set(tempoList)]
-    print("List of BPM Values with Duplicates removed : \n", nodups)
-    tempoList = genreClassification(nodups)
+    nodups = [*set(tempoList)]                      # Removes all of the duplicates from the list
+    print("List of BPM Values with Duplicates removed : \n", nodups) # NOTE: The order might be changed
+    tempoList = genreClassification(nodups)         # Determines the Genre using the BPM 
     print("Probable Genres:")
-    for i in tempoList:
+    for i in tempoList:                             # Prints Each line of the tempoList0
         print(i)
 
 def execute(song,interval_length):
