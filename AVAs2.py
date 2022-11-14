@@ -1,4 +1,4 @@
-#Updated on 10-26
+#Updated on 11-14
 
 from tkinter import *
 import customtkinter
@@ -10,11 +10,12 @@ import os
 import shutil
 from tkinter import filedialog
 
+#from tempoDetect import detect_tempo
+
 #Set the overall theme of our app
 customtkinter.set_appearance_mode("dark")  # Modes: system (default), light, dark
 customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
-
-
+song_name = "x" #global variable that will store name of the song we are analyzing
 
 # Create the windows template class
 class windows(customtkinter.CTk):
@@ -109,10 +110,11 @@ class HomePage(customtkinter.CTkFrame):
         #============================================================#
         #Open File method
         def open_file():
+            global song_name
             self.song = filedialog.askopenfilename(filetypes=(("mp3 Files", "*.mp3"), ))
             shutil.copy(self.song, os.getcwd())
-            self.txt = str(os.path.basename(self.song))
-            self.text = customtkinter.CTkLabel(self, text=self.txt + " ...Successfully uploaded")
+            self.song_name = str(os.path.basename(self.song))
+            self.text = customtkinter.CTkLabel(self, text=self.song_name + " ...Successfully uploaded")
             self.text.grid(row=2,column=1,columnspan = 1, sticky = "W")
 
         #Initialize and place the "Open file" button
@@ -216,6 +218,13 @@ class AnalysisPage(customtkinter.CTkFrame):
     def get_results(self):
         #create an empty array that fetches the results
         self.results = []
+        
+        #Fetch MP3 File name
+        file = song_name
+
+        #Fetch BPM
+        #bpm_result = detect_tempo()
+
         #add fetched results onto an array
         self.results.append('Sad')
 
