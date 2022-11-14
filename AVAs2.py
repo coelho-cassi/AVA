@@ -212,15 +212,81 @@ class OptionsPage(customtkinter.CTkFrame):
 
 #Define the Analysis Page
 class AnalysisPage(customtkinter.CTkFrame):
+
+    def get_results(self):
+        #create an empty array that fetches the results
+        self.results = []
+        #add fetched results onto an array
+        self.results.append('Sad')
+
+        #Display the results
+        self.mood_result = customtkinter.CTkLabel(master=self.mood_frame, text=self.results[0])
+        self.mood_result.grid(column=0, row=1, sticky="nwe", padx=15, pady=15)
+
+        self.genre_result = customtkinter.CTkLabel(master=self.genre_frame, text=self.results[0])
+        self.genre_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
+
+        self.BPM_result = customtkinter.CTkLabel(master=self.bpm_frame, text=self.results[0])
+        self.BPM_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
+
     def __init__(self, parent, controller):
         customtkinter.CTkFrame.__init__(self, parent)
-        label = customtkinter.CTkLabel(self, text="Analysis Page, we did it!")
-        label.pack(padx=10, pady=10)
 
+        #Create a button that allows the user to switch to another window
         switch_window_button = customtkinter.CTkButton(
             self, text="Return to Home Page", command=lambda: controller.show_frame(HomePage)
         )
-        switch_window_button.pack(side="bottom", fill=tk.X)
+        switch_window_button.grid(row=8,column=0, columnspan=4, sticky= "sw")
+
+        #Create a border frame for aesthetic
+        self.border_frame = customtkinter.CTkFrame(self)
+        self.border_frame.grid(row=0, column=0, columnspan=2, rowspan=4, pady=20, padx=20, sticky="nsew")
+
+        #Create a frame where our main bulk of the page will lie
+        self.border_frame2 = customtkinter.CTkFrame(self.border_frame)
+        self.border_frame2.grid(row=0, column=0, columnspan=2, rowspan=4, pady=20, padx=20, sticky="nsew")
+
+        #Create a button that sparks the program to analyze the mp3 file in the directory
+        analyze_button = customtkinter.CTkButton(
+            self.border_frame2, text="Analyze", command=self.get_results
+        )
+        analyze_button.grid(column = 1, row = 6, sticky = "nesw")
+
+        #Create mood, bpm, genre frames to lay on top
+        self.mood_frame = customtkinter.CTkFrame(self.border_frame2)
+        self.mood_frame.grid(column = 0, row = 0, pady=40)
+        self.bpm_frame = customtkinter.CTkFrame(self.border_frame2)
+        self.bpm_frame.grid(column = 1, row = 0)
+        self.genre_frame = customtkinter.CTkFrame(self.border_frame2)
+        self.genre_frame.grid(column = 2, row = 0)
+
+        #Configure mood, bpm, genre grid manager
+        self.mood_frame.rowconfigure(0, weight=1)
+        self.mood_frame.columnconfigure(0, weight=1)
+
+        self.bpm_frame.rowconfigure(0, weight=1)
+        self.bpm_frame.columnconfigure(0, weight=1)
+
+        self.bpm_frame.rowconfigure(0, weight=1)
+        self.bpm_frame.columnconfigure(0, weight=1)
+
+        #Create Labels within each mini-frame
+        self.mood_label = customtkinter.CTkLabel(master=self.mood_frame, text="Mood")
+        self.mood_label.grid(column=0, row=0, sticky="nwe", padx=15, pady=15)
+        self.bpm_label = customtkinter.CTkLabel(master=self.bpm_frame, text="BPM")
+        self.bpm_label.grid(column=1, row=0, sticky="nwe", padx=15, pady=15)
+        self.genre_label = customtkinter.CTkLabel(master=self.genre_frame, text="Genre")
+        self.genre_label.grid(column=1, row=0, sticky="nwe", padx=15, pady=15)
+
+
+        self.border_frame2.columnconfigure(1, weight=1)
+        self.border_frame2.rowconfigure(1, weight=1)
+
+        self.border_frame.columnconfigure(1, weight=1)
+        self.border_frame.rowconfigure(1, weight=1)
+
+        self.columnconfigure(1, weight=1)
+        self.rowconfigure(1, weight=1)
 
 
 class PerformancePage(customtkinter.CTkFrame):
