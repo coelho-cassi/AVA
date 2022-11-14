@@ -5,7 +5,7 @@ import math
 # CS-4390 Senior Project : AVA Software
 # Genre Detection Program
 # author: Jakob Childers
-# verison: 11/06/2022
+# verison: 11/13/2022
 #
 # Input Arguements:
 #   python genreDetect.py [example1.mp3] [interval_length] 
@@ -54,7 +54,34 @@ def main():
     print("Probable Genres:")
     for i in tempoList:
         print(i)
-    
+
+def execute(song,interval_length):
+    tempoList = []
+    y, sr = librosa.load(song)                      # Loads Song using the Librosa library
+    x = librosa.get_duration(y=y,sr=sr)             # Calculates Length of the mp3 file
+    x1 = math.floor(x)                              # Remove Decimal from length value
+    a = math.floor(x1 / interval_length)            # Determines the number of seqments
+    b = x1 % interval_length                        # Determines the length of the final seqment  
+                                                    # NOTE: (a*interval_length + b) = total length of mp3
+                                                    
+    for i in range(1,a+1):                          # Splits the audio into 'a' segments
+        temp = i*interval_length
+        y, sr = librosa.load(song, offset=temp,duration=30)
+        onset_env = librosa.onset.onset_strength(y=y,sr=sr)
+        tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
+        tempoList.append(tempo[0])                  # Appends current seqment BPM to List
+    if b != 0:                                      
+        y, sr = librosa.load(song, offset=temp, duration=b)     # If b is not zero then the program will calculate
+        onset_env = librosa.onset.onset_strength(y=y,sr=sr)     # the BPM of the last seqment
+        tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
+        tempoList.append(tempo[0])                  # Appends final sequment BPM to List
+        
+    nodups = [*set(tempoList)]                      # Removes all of the duplicates from the list   
+                                                    # NOTE: The order might be changed
+    tempoList = genreClassification(nodups)         # Determines the Genre using the BPM 
+
+    return tempoList                               
+
 def genreClassification(BPM_List):
     genreDict = {
         "Blues": 0,
