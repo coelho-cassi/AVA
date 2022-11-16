@@ -1,4 +1,4 @@
-#Updated on 11-14
+#Updated on 11-15
 
 from tkinter import *
 import customtkinter
@@ -10,7 +10,8 @@ import os
 import shutil
 from tkinter import filedialog
 
-#from tempoDetect import detect_tempo
+import tempoDetect
+import genreDetect
 
 #Set the overall theme of our app
 customtkinter.set_appearance_mode("dark")  # Modes: system (default), light, dark
@@ -113,8 +114,8 @@ class HomePage(customtkinter.CTkFrame):
             global song_name
             self.song = filedialog.askopenfilename(filetypes=(("mp3 Files", "*.mp3"), ))
             shutil.copy(self.song, os.getcwd())
-            self.song_name = str(os.path.basename(self.song))
-            self.text = customtkinter.CTkLabel(self, text=self.song_name + " ...Successfully uploaded")
+            song_name = str(os.path.basename(self.song))
+            self.text = customtkinter.CTkLabel(self, text=song_name + " ...Successfully uploaded")
             self.text.grid(row=2,column=1,columnspan = 1, sticky = "W")
 
         #Initialize and place the "Open file" button
@@ -216,27 +217,44 @@ class OptionsPage(customtkinter.CTkFrame):
 class AnalysisPage(customtkinter.CTkFrame):
 
     def get_results(self):
-        #create an empty array that fetches the results
+        #create an empty array that stores the fetched results
         self.results = []
         
-        #Fetch MP3 File name
+        #Fetch MP3 File name using global variable song_name
         file = song_name
 
         #Fetch BPM
-        #bpm_result = detect_tempo()
+        #bpm_result = str(detect_tempo(file))[1:6]
+        bpm_result ="{:.2f}".format(tempoDetect.detect_tempo(file)[0])
 
-        #add fetched results onto an array
-        self.results.append('Sad')
+        #Fetch Genre 
+        genre_result = genreDetect.execute(file,30) # Splits example1.mp3 into 30 second seqments
+        #print(genre_result)
 
-        #Display the results
-        self.mood_result = customtkinter.CTkLabel(master=self.mood_frame, text=self.results[0])
+        #add fetched results onto results array
+        #results[BPM,MOOD,GENRE]
+        self.results.append(bpm_result) #BPM   results[0]   Will always be 1 element
+        self.results.append("Sad")      #Mood  results[1-?] May be multiple elements
+
+        #Genre has multiple elements 
+        element = 1
+        for element in genre_result:
+            self.results.append(element)
+
+        genre_string ='\n'.join(map(str, self.results)) #formats the array
+        genre_string = genre_string.split('\n', 2)[2]   #stores the results array in a formated string
+
+
+        #Display the results on Tkinter Labels
+        self.BPM_result = customtkinter.CTkLabel(master=self.bpm_frame, text=self.results[0], text_font=("Roboto Medium", -14))
+        self.BPM_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
+
+        self.mood_result = customtkinter.CTkLabel(master=self.mood_frame, text=self.results[1], text_font=("Roboto Medium", -14))
         self.mood_result.grid(column=0, row=1, sticky="nwe", padx=15, pady=15)
 
-        self.genre_result = customtkinter.CTkLabel(master=self.genre_frame, text=self.results[0])
+        self.genre_result = customtkinter.CTkLabel(master=self.genre_frame, text=genre_string, text_font=("Roboto Medium", -14))
         self.genre_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
 
-        self.BPM_result = customtkinter.CTkLabel(master=self.bpm_frame, text=self.results[0])
-        self.BPM_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
 
     def __init__(self, parent, controller):
         customtkinter.CTkFrame.__init__(self, parent)
@@ -261,6 +279,10 @@ class AnalysisPage(customtkinter.CTkFrame):
         )
         analyze_button.grid(column = 1, row = 6, sticky = "nesw")
 
+        #title
+        self.title_label = customtkinter.CTkLabel(master=self.border_frame2, text="Analysis", text_font=("Roboto Medium", -20))
+        self.title_label.grid(column=1, row=0, sticky="nwe", padx=5, pady=5)
+
         #Create mood, bpm, genre frames to lay on top
         self.mood_frame = customtkinter.CTkFrame(self.border_frame2)
         self.mood_frame.grid(column = 0, row = 0, pady=40)
@@ -280,11 +302,11 @@ class AnalysisPage(customtkinter.CTkFrame):
         self.bpm_frame.columnconfigure(0, weight=1)
 
         #Create Labels within each mini-frame
-        self.mood_label = customtkinter.CTkLabel(master=self.mood_frame, text="Mood")
+        self.mood_label = customtkinter.CTkLabel(master=self.mood_frame, text="Mood", text_font=("Roboto Medium", -18))
         self.mood_label.grid(column=0, row=0, sticky="nwe", padx=15, pady=15)
-        self.bpm_label = customtkinter.CTkLabel(master=self.bpm_frame, text="BPM")
+        self.bpm_label = customtkinter.CTkLabel(master=self.bpm_frame, text="BPM", text_font=("Roboto Medium", -18))
         self.bpm_label.grid(column=1, row=0, sticky="nwe", padx=15, pady=15)
-        self.genre_label = customtkinter.CTkLabel(master=self.genre_frame, text="Genre")
+        self.genre_label = customtkinter.CTkLabel(master=self.genre_frame, text="Genre", text_font=("Roboto Medium", -18))
         self.genre_label.grid(column=1, row=0, sticky="nwe", padx=15, pady=15)
 
 
