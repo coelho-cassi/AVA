@@ -229,20 +229,36 @@ class AnalysisPage(customtkinter.CTkFrame):
 
         #Fetch Genre 
         genre_result = genreDetect.execute(file,30) # Splits example1.mp3 into 30 second seqments
-        #print(genre_result)
-
-        #add fetched results onto results array
-        #results[BPM,MOOD,GENRE]
-        self.results.append(bpm_result) #BPM   results[0]   Will always be 1 element
-        self.results.append("Sad")      #Mood  results[1-?] May be multiple elements
-
+        
         #Genre has multiple elements 
         element = 1
         for element in genre_result:
-            self.results.append(element)
-
+            self.results.append(element)            #add fetched results onto results array
+            
         genre_string ='\n'.join(map(str, self.results)) #formats the array
         genre_string = genre_string.split('\n', 2)[2]   #stores the results array in a formated string
+        
+        #Fetch Lyrics (Current naming convention for lyrics file is <mp3_file_name.txt>)
+        d = os.getcwd() #Grab the current working directory 
+        os.chdir("..")  #define the child directory
+        o = [os.path.join(d,o) for o in os.listdir(d) if os.path.isdir(os.path.join(d,o))] # Gets all directories in the folder as a tuple
+        temp_tuple = os.path.splitext(file) #create a tuple [song_name, .mp3]
+        lyric_file = str("\\" +(temp_tuple[0])+".txt")  #creates the path name of the .txt file'
+        
+        for item in o: #search through all child directories of the cwd
+            if os.path.exists(item + lyric_file):   #if an item matches our lyric_file
+                lyrics_path = item + lyric_file     #set a variable to store the complete path
+        
+        with open(lyrics_path, "r") as f:   #open path and read into a variable to later use in our UI for display
+            lyrics = f.read()
+            
+        #Display Lyrics
+        self.lyrics_box = customtkinter.CTkLabel(master = self.border_frame2, text = lyrics, text_font=("Roboto Medium", -12), height=100, corner_radius=6, fg_color = ("white", "gray38"))
+        self.lyrics_box.grid(column=1, row=2, sticky ="nesw")
+
+        #results[BPM,MOOD,GENRE]
+        self.results.append(bpm_result) #BPM   results[0]   Will always be 1 element
+        self.results.append("Sad")      #Mood  results[1-?] May be multiple elements
 
 
         #Display the results on Tkinter Labels
@@ -277,11 +293,16 @@ class AnalysisPage(customtkinter.CTkFrame):
         analyze_button = customtkinter.CTkButton(
             self.border_frame2, text="Analyze", command=self.get_results
         )
-        analyze_button.grid(column = 1, row = 6, sticky = "nesw")
+        analyze_button.grid(column = 1, row = 6, sticky = "nesw", pady=5)
 
         #title
         self.title_label = customtkinter.CTkLabel(master=self.border_frame2, text="Analysis", text_font=("Roboto Medium", -20))
-        self.title_label.grid(column=1, row=0, sticky="nwe", padx=5, pady=5)
+        self.title_label.grid(column=1, row=0, sticky="nesw", padx=5, pady=5)
+        
+        
+        #progress bar for later implementation
+        #self.progressbar = customtkinter.CTkProgressBar(master=self.border_frame2)
+        #self.progressbar.grid(row=2, column=1, sticky="nesw")
 
         #Create mood, bpm, genre frames to lay on top
         self.mood_frame = customtkinter.CTkFrame(self.border_frame2)
