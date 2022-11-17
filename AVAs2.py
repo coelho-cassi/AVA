@@ -1,4 +1,4 @@
-#Updated on 11-14
+#Updated on 11-16
 
 from tkinter import *
 import customtkinter
@@ -10,7 +10,8 @@ import os
 import shutil
 from tkinter import filedialog
 
-from tempoDetect import detect_tempo
+import tempoDetect
+import genreDetect
 
 #Set the overall theme of our app
 customtkinter.set_appearance_mode("dark")  # Modes: system (default), light, dark
@@ -224,13 +225,24 @@ class AnalysisPage(customtkinter.CTkFrame):
 
         #Fetch BPM
         #bpm_result = str(detect_tempo(file))[1:6]
-        bpm_result ="{:.2f}".format(detect_tempo(file)[0])
+        bpm_result ="{:.2f}".format(tempoDetect.detect_tempo(file)[0])
+
+        #Fetch Genre 
+        genre_result = genreDetect.execute(file,30) # Splits example1.mp3 into 30 second seqments
+        #print(genre_result)
 
         #add fetched results onto results array
         #results[BPM,MOOD,GENRE]
         self.results.append(bpm_result) #BPM   results[0]   Will always be 1 element
         self.results.append("Sad")      #Mood  results[1-?] May be multiple elements
-        self.results.append("Rock")     #Genre results[?-?] May be multiple elements
+
+        #Genre has multiple elements 
+        element = 1
+        for element in genre_result:
+            self.results.append(element)
+
+        genre_string ='\n'.join(map(str, self.results)) #formats the array
+        genre_string = genre_string.split('\n', 2)[2]   #stores the results array in a formated string
 
 
         #Display the results on Tkinter Labels
@@ -240,7 +252,7 @@ class AnalysisPage(customtkinter.CTkFrame):
         self.mood_result = customtkinter.CTkLabel(master=self.mood_frame, text=self.results[1], text_font=("Roboto Medium", -14))
         self.mood_result.grid(column=0, row=1, sticky="nwe", padx=15, pady=15)
 
-        self.genre_result = customtkinter.CTkLabel(master=self.genre_frame, text=self.results[2], text_font=("Roboto Medium", -14))
+        self.genre_result = customtkinter.CTkLabel(master=self.genre_frame, text=genre_string, text_font=("Roboto Medium", -14))
         self.genre_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
 
 
