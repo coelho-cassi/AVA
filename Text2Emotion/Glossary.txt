@@ -1,0 +1,17 @@
+clean_words_list.txt - Document holding symbols to be removed from lyrics
+
+garbage_words.txt - Document holding words to be removed from lyrics
+
+Lyrics_list.txt - List off all the songs in the database Jakob and I are building
+
+result.txt - Result of my program being run against all 140+ songs before and after my modifications. These results are inconclusive and tell you if the percentages are too close to make a decisive call
+
+result_conclusive.txt - Result of my program being run against all 140+ songs before and after my modifications. These results are conclusive and only return the highest weighted mood.
+
+Text2Emotion.py - Single song version of my program that takes a song fed into the checkLyrics() function.
+
+BulkText2Emotion.py - Batch version of my program designed to be run through a list of songs provided in a text document like LyricsList.txt
+
+Lyrics Folder - Folder containing the lyrics to 140+ songs in individual text files.
+
+Extra Folder - Storage for misc stuff I've used this project. Not needed for the project.
