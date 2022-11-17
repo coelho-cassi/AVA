@@ -1,0 +1,134 @@
+93TilInfinity.txt                  Before: Sad                 After: Sad
+AceOfSpades.txt                    Before: Fear                After: Sad
+AintMisbehavin.txt                 Before: Happy               After: Sad
+AllTheThingsYouAre.txt             Before: Sad                 After: Sad
+AngelOfDeath.txt                   Before: Fear                After: Sad
+BabyPleaseDontGo.txt               Before: Happy               After: Happy
+BackInBlack.txt                    Before: Fear                After: Anger
+BellyOfTheBeast.txt                Before: Fear                After: Sad
+BillieJean.txt                     Before: Surprise            After: Happy
+BlindingLights.txt                 Before: Surprise            After: Sad
+BlingBling.txt                     Before: Fear                After: Inconclusive. Happy and Sad
+BlowingMoneyFast.txt               Before: Surprise            After: Inconclusive. Happy and Sad
+BodyAndSoul.txt                    Before: Surprise            After: Sad
+BodyLikeABackRoad.txt              Before: Surprise            After: Happy
+BoogieChillin.txt                  Before: Fear                After: Sad
+BoomBoom.txt                       Before: Surprise            After: Sad
+BornUnderABadSign.txt              Before: Happy               After: Happy
+BreakingTheLaw.txt                 Before: Surprise            After: Sad
+CallMeMaybe.txt                    Before: Fear                After: Sad
+CarsThatGoBoom.txt                 Before: Surprise            After: Inconclusive. Angry and Sad
+CatfishBlues.txt                   Before: Sad                 After: Anger
+CheckYesOrNo.txt                   Before: Happy               After: Happy
+CrazyTrain.txt                     Before: Fear                After: Anger
+CrossRoadBlues.txt                 Before: Sad                 After: Sad
+DancingOnMyOwn.txt                 Before: Fear                After: Sad
+DontStopBelieving.txt              Before: Sad                 After: Sad
+DoTheRump.txt                      Before: Surprise            After: Sad
+EmpireStateOfMind.txt              Before: Sad                 After: Sad
+Evil.txt                           Before: Fear                After: Inconclusive. Happy and Sad
+Fancy.txt                          Before: Fear                After: Sad
+Firework.txt                       Before: Surprise            After: Anger
+FlyMeToTheMoon.txt                 Before: Angry               After: Happy
+FreakyTales.txt                    Before: Surprise            After: Inconclusive. Happy and Sad
+FriendsInLowPlaces.txt             Before: Sad                 After: Sad
+GeorgiaOnMyMind.txt                Before: Surprise            After: Happy
+GetLow.txt                         Before: Sad                 After: Sad
+GoddamnElectric.txt                Before: Surprise            After: Sad
+GoodVibrations.txt                 Before: Fear                After: Happy
+GotMyMojoWorking.txt               Before: Fear                After: Happy
+GuitarsAndCadillacs.txt            Before: Sad                 After: Sad
+HeyJude.txt                        Before: Sad                 After: Sad
+HeyYa.txt                          Before: Surprise            After: Sad
+HipsDontLie.txt                    Before: Sad                 After: Sad
+HollabackGirl.txt                  Before: Surprise            After: Sad
+HolyDiver.txt                      Before: Angry               After: Anger
+HolyWars.txt                       Before: Fear                After: Inconclusive. Angry and Sad
+HotelCalifornia.txt                Before: Fear                After: Happy
+HowHighTheMoon.txt                 Before: Fear                After: Sad
+HowLongBlues.txt                   Before: Fear                After: Sad
+IdRatherGoBlind.txt                Before: Sad                 After: Inconclusive. Angry and Sad
+IfIHadABoat.txt                    Before: Angry               After: Inconclusive. Happy and Sad
+IGotRhythm.txt                     Before: Happy               After: Happy
+IHeardThroughTheGrapevine.txt      Before: Sad                 After: Sad
+Imagine.txt                        Before: Surprise            After: Inconclusive. Happy and Angry
+ImmigrantSong.txt                  Before: Fear                After: Sad
+InternationalPlayersAnthem.txt     Before: Sad                 After: Sad
+IronMan.txt                        Before: Fear                After: Sad
+ItAintHardToTell.txt               Before: Surprise            After: Anger
+ItDontMeanAThing.txt               Before: Sad                 After: Sad
+JailhouseRock.txt                  Before: Fear                After: Sad
+JohnnyBGoode.txt                   Before: Fear                After: Inconclusive. Happy and Sad
+JoleBlon.txt                       Before: Surprise            After: Sad
+JumpAround.txt                     Before: Surprise            After: Sad
+JustAFriend.txt                    Before: Happy               After: Happy
+LikeARollingStone.txt              Before: Sad                 After: Sad
+LittleWalter.txt                   Before: Surprise            After: Sad
+LouieLouie.txt                     Before: Surprise            After: Happy
+MasterOfPuppets.txt                Before: Fear                After: Sad
+MatchboxBlues.txt                  Before: Sad                 After: Sad
+MeAndTheDevilBlues.txt             Before: Surprise            After: Sad
+MoneyAintAThing.txt                Before: Fear                After: Inconclusive. Angry and Sad
+MyGirl.txt                         Before: Surprise            After: Sad
+NaughtyByNature.txt                Before: Fear                After: Sad
+NightAndDay.txt                    Before: Happy               After: Happy
+OldHippie.txt                      Before: Angry               After: Anger
+OldTownRoad.txt                    Before: Sad                 After: Sad
+OnTheSunnySideOfTheStreet.txt      Before: Sad                 After: Sad
+OriginalCrossroads.txt             Before: Fear                After: Sad
+PaperPlanes.txt                    Before: Sad                 After: Sad
+PeopleGotALottaNerve.txt           Before: Fear                After: Sad
+PokerFace.txt                      Before: Sad                 After: Sad
+QueenOfHearts.txt                  Before: Sad                 After: Sad
+RedneckMother.txt                  Before: Fear                After: Inconclusive. Angry and Sad
+RedneckWoman.txt                   Before: Fear                After: Inconclusive. Happy and Angry
+Rehab.txt                          Before: Sad                 After: Sad
+Respect.txt                        Before: Sad                 After: Sad
+Ritual.txt                         Before: Fear                After: Sad
+RockAroundTheClock.txt             Before: Fear                After: Happy
+RockYouLikeAHurricane.txt          Before: Happy               After: Happy
+RollingInTheDeep.txt               Before: Sad                 After: Sad
+RoundMidnight.txt                  Before: Surprise            After: Sad
+RoxannesRevenge.txt                Before: Sad                 After: Inconclusive. Happy and Sad
+Satisfaction.txt                   Before: Sad                 After: Happy
+Serenity.txt                       Before: Fear                After: Inconclusive. Happy and Angry
+SexyBack.txt                       Before: Sad                 After: Sad
+ShakeItOff.txt                     Before: Sad                 After: Sad
+ShesActingSingle.txt               Before: Sad                 After: Sad
+ShoutAtTheDevil.txt                Before: Sad                 After: Sad
+SingleLadies.txt                   Before: Sad                 After: Sad
+SlowDown.txt                       Before: Sad                 After: Sad
+SmokyMountainRain.txt              Before: Sad                 After: Sad
+Springsteen.txt                    Before: Fear                After: Sad
+StairwayToHeaven.txt               Before: Surprise            After: Sad
+Starships.txt                      Before: Fear                After: Sad
+StellaByStarlight.txt              Before: Surprise            After: Inconclusive. Happy and Sad
+StormyMonday.txt                   Before: Fear                After: Sad
+StraightNoChaser.txt               Before: Fear                After: Sad
+StreetsOfBaltimore.txt             Before: Sad                 After: Sad
+StThomas.txt                       Before: Sad                 After: Sad
+Summertime.txt                     Before: Fear                After: Sad
+SweetChildOfMine.txt               Before: Surprise            After: Happy
+SweetHomeChicago.txt               Before: Sad                 After: Sad
+TakeFive.txt                       Before: Fear                After: Happy
+TakeTheATrain.txt                  Before: Sad                 After: Sad
+TheBridge.txt                      Before: Fear                After: Sad
+TheGirlFromIpanema.txt             Before: Happy               After: Happy
+TheHappiestGirl.txt                Before: Happy               After: Happy
+TheHumptyDance.txt                 Before: Fear                After: Sad
+TheRain.txt                        Before: Sad                 After: Inconclusive. Happy and Sad
+TheThrillIsGone.txt                Before: Surprise            After: Happy
+TheTrooper.txt                     Before: Fear                After: Sad
+Toxic.txt                          Before: Happy               After: Happy
+TuttiFrutti.txt                    Before: Fear                After: Happy
+Umbrella.txt                       Before: Fear                After: Sad
+UptownFunk.txt                     Before: Surprise            After: Sad
+WangDangDoodle.txt                 Before: Fear                After: Sad
+WatermelonWine.txt                 Before: Fear                After: Happy
+WelcomeToMyNightmare.txt           Before: Fear                After: Happy
+WelcomeToTheFuture.txt             Before: Surprise            After: Happy
+WhatAWonderfulWorld.txt            Before: Happy               After: Happy
+WhatdISay.txt                      Before: Surprise            After: Sad
+WhiskeyLullaby.txt                 Before: Fear                After: Anger
+WorkingMan.txt                     Before: Surprise            After: Sad
+YouveLostThatLovinFeelin.txt       Before: Sad                 After: Happy
