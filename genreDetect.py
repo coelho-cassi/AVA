@@ -174,68 +174,68 @@ def genreClassification(BPM_List):
     arrLen = len(BPM_List)
     for i in range(0,arrLen):                   # i is the index of each BPM in the given List
         ft = BPM_List[i]
-        if ft >= 40 and ft <= 100:
+        if ft >= 75 and ft <= 110:
             genreDict["Blues"] += 1
-        if ft >= 120 and ft <= 140:
+        if ft >= 115 and ft <= 145:
             genreDict["Classical"] += 1
-        if ft >= 60 and ft <= 100:
+        if ft >= 90 and ft <= 120:
             genreDict["Country"] += 1
-        if ft >= 85 and ft <= 115:
+        if ft >= 100 and ft <= 190:
             genreDict["HipHop"] += 1
-        if ft >= 120 and ft <= 125:
+        if ft >= 110 and ft <= 145:
             genreDict["Jazz"] += 1
-        if ft >= 100 and ft <= 160:
+        if ft >= 110 and ft <= 155:
             genreDict["Metal"] += 1
-        if ft >= 100 and ft <= 130:
+        if ft >= 100 and ft <= 140:
             genreDict["Pop"] += 1
-        if ft >= 110 and ft <= 140:
+        if ft >= 110 and ft <= 160:
             genreDict["Rock"] += 1
             
     # Adding Blues Probability
     temp = math.floor(((genreDict["Blues"] / arrLen) * 100))        # Formats temp as a percentage
-    genreList[0] += str(temp) + '%'
+    genreList[0] += str(temp) + '% of BPM Values exist within this Genre'
     if temp == 0:
         unknownCount += 1                       # If probability = 0 then add one to the UnknownCount
         
     # Adding Classical Probability
     temp = math.floor(((genreDict["Classical"] / arrLen) * 100))    # Formats temp as a percentage
-    genreList[1] += str(temp) + '%'
+    genreList[1] += str(temp) + '% of BPM Values exist within this Genre'
     if temp == 0:
         unknownCount += 1                       # If probability = 0 then add one to the UnknownCount
         
     # Adding Country Probability
     temp = math.floor(((genreDict["Country"] / arrLen) * 100))      # Formats temp as a percentage
-    genreList[2] += str(temp) + '%'
+    genreList[2] += str(temp) + '% of BPM Values exist within this Genre'
     if temp == 0:
         unknownCount += 1                       # If probability = 0 then add one to the UnknownCount
      
     #Adding HipHop Probability
     temp = math.floor(((genreDict["HipHop"] / arrLen) * 100))       # Formats temp as a percentage
-    genreList[3] += str(temp) + '%'
+    genreList[3] += str(temp) + '% of BPM Values exist within this Genre'
     if temp == 0:
         unknownCount += 1                       # If probability = 0 then add one to the UnknownCount
        
     #Adding Jazz Probability
     temp = math.floor(((genreDict["Jazz"] / arrLen) * 100))         # Formats temp as a percentage
-    genreList[4] += str(temp) + '%'
+    genreList[4] += str(temp) + '% of BPM Values exist within this Genre'
     if temp == 0:
         unknownCount += 1                       # If probability = 0 then add one to the UnknownCount
         
     #Adding Metal Probability
     temp = math.floor(((genreDict["Metal"] / arrLen) * 100))        # Formats temp as a percentage
-    genreList[5] += str(temp) + '%'
+    genreList[5] += str(temp) + '% of BPM Values exist within this Genre'
     if temp == 0:
         unknownCount += 1                       # If probability = 0 then add one to the UnknownCount
       
     #Adding Pop Probability
     temp = math.floor(((genreDict["Pop"] / arrLen) * 100))          # Formats temp as a percentage
-    genreList[6] += str(temp) + '%'
+    genreList[6] += str(temp) + '% of BPM Values exist within this Genre'
     if temp == 0:
         unknownCount += 1                       # If probability = 0 then add one to the UnknownCount
         
     #Adding Rock Probability
     temp = math.floor(((genreDict["Rock"] / arrLen) * 100))         # Formats temp as a percentage
-    genreList[7] += str(temp) + '%'
+    genreList[7] += str(temp) + '% of BPM Values exist within this Genre'
     if temp == 0:
         unknownCount += 1                       # If probability = 0 then add one to the UnknownCount
         
