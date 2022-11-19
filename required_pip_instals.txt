@@ -4,3 +4,4 @@ pip install pillow
 pip install customtkinter
 pip install librosa
 pip install whisper
+pip install spleeter
