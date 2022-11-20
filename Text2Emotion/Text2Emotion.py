@@ -1,6 +1,5 @@
 import text2emotion as te
 import sys
-import os.path
 
 #
 # Program: Text2Emotion.py
@@ -101,22 +100,12 @@ def inconclusiveResults(hw, sw, aw):
 
 
 def checkLyrics(song):
-
-    #Checks to see if the song exits
-    file_exists = os.path.exists(song)
-    if(file_exists == False):
-        return("Err: Lyrics file DNE")
-
-
     #Reading the lyrics into a usable variable mystring
     with open(song) as f:
         lines = f.readlines()
     mystring = ''
     for x in lines: 
         mystring += x + ' '
-        
-    if(len(mystring) == 0):
-        return("Err: Empty txt document")
     oldstring = mystring
     
     #Setting up myString to clean itself out.
@@ -155,10 +144,6 @@ def checkLyrics(song):
     #   Weighing the weight of these three emotions against each other
     #   and determining what the weight of JUST happy, angry, and sad are.
     total_weight = happy_weight + sad_weight + angry_weight
-    
-    if(total_weight == 0):
-        return("Err: No usable lyrics.")
-    
     happy_weight = round(((happy_weight / total_weight) * 100),1)
     angry_weight = round(((angry_weight / total_weight) * 100),1)
     sad_weight = round(((sad_weight / total_weight) * 100),1)
@@ -181,15 +166,14 @@ def checkLyrics(song):
     #print(outStr1)
     #print(outStr2)
     #print(outStr3)
-
-
-
-    #   Final Return
-    returnString = 'The strongest emotion is:',strongest_mood
-    #returnString = strongest_mood_conclusive
-    return(returnString)    
     
+    finalString = "The strongest emotion is: "+ strongest_mood
+    return finalString
+    #   Final Return
+    #returnString = strongest_mood_conclusive
+    #return returnString    
+    print('The strongest emotion is:',strongest_mood)
 
 #   Feeding the input for the song file name into a variable
-song = str(sys.argv[1])
-checkLyrics(song)
+#song = str(sys.argv[1])
+#checkLyrics(song)
