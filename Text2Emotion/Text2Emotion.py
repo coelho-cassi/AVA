@@ -166,14 +166,14 @@ def checkLyrics(song):
     #print(outStr1)
     #print(outStr2)
     #print(outStr3)
-
-
-
+    
+    finalString = "The strongest emotion is: "+ strongest_mood
+    return finalString
     #   Final Return
     #returnString = strongest_mood_conclusive
     #return returnString    
     print('The strongest emotion is:',strongest_mood)
 
 #   Feeding the input for the song file name into a variable
-song = str(sys.argv[1])
-checkLyrics(song)
+#song = str(sys.argv[1])
+#checkLyrics(song)
