@@ -200,20 +200,20 @@ def checkLyrics(song):
 
 
 
-print("Starting")
-with open('LyricsList.txt') as LL:
-    dirtySongList = LL.readlines()
-songListString = ''
+#print("Starting")
+#with open('LyricsList.txt') as LL:
+#    dirtySongList = LL.readlines()
+#songListString = ''
 
-for z in dirtySongList:
-    songListString += z + ' '
-songListString = songListString.replace('\n','')
-cleanSongList = songListString.split(" ")
-plain_text = open("result_conclusive.txt", "a")
+#for z in dirtySongList:
+#    songListString += z + ' '
+#songListString = songListString.replace('\n','')
+#cleanSongList = songListString.split(" ")
+#plain_text = open("result_conclusive.txt", "a")
 
-for i in cleanSongList:
-    if(i == ''):
-        exit()
-    lastString = checkLyrics(i)
-    plain_text.write(lastString)
-    print("Analyzed Song " + i)
+#for i in cleanSongList:
+#    if(i == ''):
+#        exit()
+#    lastString = checkLyrics(i)
+#    plain_text.write(lastString)
+#    print("Analyzed Song " + i)

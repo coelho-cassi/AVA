@@ -13,6 +13,14 @@ from tkinter import filedialog
 import tempoDetect
 import genreDetect
 
+#Import Mood module from another folder:
+import sys
+PROGRAM_DIR = os.path.dirname(os.path.abspath(sys.argv[0]))
+new_path = os.path.join(PROGRAM_DIR, "Text2Emotion")
+sys.path.insert(1, new_path)
+import Text2Emotion
+
+
 #Set the overall theme of our app
 customtkinter.set_appearance_mode("dark")  # Modes: system (default), light, dark
 customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
@@ -217,59 +225,69 @@ class OptionsPage(customtkinter.CTkFrame):
 class AnalysisPage(customtkinter.CTkFrame):
 
     def get_results(self):
+        #Function that calls genreDetect,tempoDetect,Text2Emotion to retrieve the results and displays them on the UI
+        #========================================================================================================        
         #create an empty array that stores the fetched results
-        self.results = []
+        self.bpm_arr = []
+        self.genre_arr = []
+        self.mood_arr = []
         
         #Fetch MP3 File name using global variable song_name
         file = song_name
 
         #Fetch BPM
-        #bpm_result = str(detect_tempo(file))[1:6]
+        #========================================================================================================
         bpm_result ="{:.2f}".format(tempoDetect.detect_tempo(file)[0])
+        
+        #store fetched BPM in the results array
+        self.bpm_arr.append(bpm_result) #BPM   results[0]   Will always be 1 element
+        
 
         #Fetch Genre 
+        #========================================================================================================
         genre_result = genreDetect.execute(file,30) # Splits example1.mp3 into 30 second seqments
         
-        #Genre has multiple elements 
+        #Genre has multiple elements
         element = 1
         for element in genre_result:
-            self.results.append(element)            #add fetched results onto results array
+            self.genre_arr.append(element)            #add fetched results onto results array
             
-        genre_string ='\n'.join(map(str, self.results)) #formats the array
+        genre_string ='\n'.join(map(str, self.genre_arr)) #formats the array
         genre_string = genre_string.split('\n', 2)[2]   #stores the results array in a formated string
         
-        #Fetch Lyrics (Current naming convention for lyrics file is <mp3_file_name.txt>)
-        d = os.getcwd() #Grab the current working directory 
-        os.chdir("..")  #define the child directory
-        o = [os.path.join(d,o) for o in os.listdir(d) if os.path.isdir(os.path.join(d,o))] # Gets all directories in the folder as a tuple
+        #Fetch Mood
+        #========================================================================================================  
         temp_tuple = os.path.splitext(file) #create a tuple [song_name, .mp3]
-        lyric_file = str("\\" +(temp_tuple[0])+".txt")  #creates the path name of the .txt file'
+        lyrics_path = "Text2Emotion/"+temp_tuple[0]+".txt"        
         
-        for item in o: #search through all child directories of the cwd
-            if os.path.exists(item + lyric_file):   #if an item matches our lyric_file
-                lyrics_path = item + lyric_file     #set a variable to store the complete path
+        mood_result = Text2Emotion.checkLyrics(lyrics_path)
+        self.mood_arr.append(mood_result)      #Mood  results[1] May be multiple elements
         
-        with open(lyrics_path, "r") as f:   #open path and read into a variable to later use in our UI for display
-            lyrics = f.read()
+        
+        #Fetch Lyrics (Current naming convention for lyrics file is <mp3_file_name.txt>)
+        #========================================================================================================       
+        
+        #with open(lyrics_path, "r") as f:   #open path and read into a variable to later use in our UI for display
+        #    lyrics = f.read()
             
-        #Display Lyrics
-        self.lyrics_box = customtkinter.CTkLabel(master = self.border_frame2, text = lyrics, text_font=("Roboto Medium", -12), height=100, corner_radius=6, fg_color = ("white", "gray38"))
-        self.lyrics_box.grid(column=1, row=2, sticky ="nesw")
-
-        #results[BPM,MOOD,GENRE]
-        self.results.append(bpm_result) #BPM   results[0]   Will always be 1 element
-        self.results.append("Sad")      #Mood  results[1-?] May be multiple elements
-
+        #print(lyrics_path)
+        
+                    
 
         #Display the results on Tkinter Labels
-        self.BPM_result = customtkinter.CTkLabel(master=self.bpm_frame, text=self.results[0], text_font=("Roboto Medium", -14))
+        #========================================================================================================
+        #Display BPM
+        self.BPM_result = customtkinter.CTkLabel(master=self.bpm_frame, text=self.bpm_arr[0], text_font=("Roboto Medium", -14))
         self.BPM_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
-
-        self.mood_result = customtkinter.CTkLabel(master=self.mood_frame, text=self.results[1], text_font=("Roboto Medium", -14))
+        #Display mood
+        self.mood_result = customtkinter.CTkLabel(master=self.mood_frame, text=self.mood_arr[0], text_font=("Roboto Medium", -14))
         self.mood_result.grid(column=0, row=1, sticky="nwe", padx=15, pady=15)
-
+        #Display genre
         self.genre_result = customtkinter.CTkLabel(master=self.genre_frame, text=genre_string, text_font=("Roboto Medium", -14))
         self.genre_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
+        #Display Lyrics
+        #self.lyrics_box = customtkinter.CTkLabel(master = self.border_frame2, text = lyrics, text_font=("Roboto Medium", -12), height=100, corner_radius=6, fg_color = ("white", "gray38"))
+        #self.lyrics_box.grid(column=1, row=2, sticky ="nesw")        
 
 
     def __init__(self, parent, controller):
