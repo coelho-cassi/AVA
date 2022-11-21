@@ -6,7 +6,7 @@ pip install pillow
 pip install librosa
 pip install text2emotion
 pip install spleeter
-pip install whisper
+pip install git+https://github.com/openai/whisper.git 
 pip install --upgrade numpy==1.23.5
 pip install --upgrade emoji==1.6.3
 pip install --upgrade numba==0.56.4
