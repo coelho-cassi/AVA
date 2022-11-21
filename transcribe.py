@@ -1,10 +1,11 @@
 import whisper
 
-filein = "vocals.wav"
-fileout = "lyrics.txt"
+filein = "audio_output/Radiohead_Spectre/vocals.wav"
+fileout = "audio_output/Radiohead_Spectre/lyrics.txt"
 
 model = whisper.load_model("small")
-result = model.transcribe(filein)    # takes ~5mins
+result = model.transcribe(filein, fp16=False, language = 'English')    # takes ~5mins
+print(result["text"])
 output = open(fileout, "w")
-output.write(result["text"])
+output.write(result["text"].strip())
 output.close()

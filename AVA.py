@@ -12,6 +12,8 @@ from tkinter import filedialog
 
 import tempoDetect
 import genreDetect
+import subprocess
+import whisper
 
 #Import Mood module from another folder:
 import sys
@@ -237,7 +239,8 @@ class AnalysisPage(customtkinter.CTkFrame):
 
         #Fetch BPM
         #========================================================================================================
-        bpm_result ="{:.2f}".format(tempoDetect.detect_tempo(file)[0])
+        bpm_song = tempoDetect.detect_tempo(file)
+        bpm_result ="{:.2f}".format(bpm_song[0])
         
         #store fetched BPM in the results array
         self.bpm_arr.append(bpm_result) #BPM   results[0]   Will always be 1 element
@@ -248,17 +251,39 @@ class AnalysisPage(customtkinter.CTkFrame):
         genre_result = genreDetect.execute(file,30) # Splits example1.mp3 into 30 second seqments
         
         #Genre has multiple elements
-        element = 1
         for element in genre_result:
             self.genre_arr.append(element)            #add fetched results onto results array
             
+        print("1:" + str(self.genre_arr))
+            
         genre_string ='\n'.join(map(str, self.genre_arr)) #formats the array
-        genre_string = genre_string.split('\n', 2)[2]   #stores the results array in a formated string
+        #print("2:" +genre_string)
+        #genre_string = genre_string.split('\n')   #stores the results array in a formated string
+        #print("3:" +str(genre_string))
+        
+        #Split Vocals/Instruments from file
+        temp_tuple = os.path.splitext(file) #create a tuple [song_name, .mp3]
+        
+        songname = file
+        command = "spleeter separate -d 900 -o audio_output " + songname
+        subprocess.Popen(command,shell=True)
+        time.sleep(70)   
+        print("Spleeter finished execution")
+        
+        #Transcribe vocal file into a text file
+        temp = str(temp_tuple[0])
+        filein = "audio_output/" + temp + "/vocals.wav"
+        fileout = "audio_output/"+ temp + "/lyrics.txt"
+        model = whisper.load_model("small")
+        result = model.transcribe(filein, fp16=False, language = 'English')    # takes ~5mins
+        #print(result["text"])
+        vocal_output = open(fileout, "w")
+        vocal_output.write(result["text"].strip())
+        vocal_output.close()
         
         #Fetch Mood
         #========================================================================================================  
-        temp_tuple = os.path.splitext(file) #create a tuple [song_name, .mp3]
-        lyrics_path = "Text2Emotion/"+temp_tuple[0]+".txt"        
+        lyrics_path = "audio_output/"+temp+"/lyrics.txt"        
         
         mood_result = Text2Emotion.checkLyrics(lyrics_path)
         self.mood_arr.append(mood_result)      #Mood  results[1] May be multiple elements
@@ -267,13 +292,17 @@ class AnalysisPage(customtkinter.CTkFrame):
         #Fetch Lyrics (Current naming convention for lyrics file is <mp3_file_name.txt>)
         #========================================================================================================       
         
-        #with open(lyrics_path, "r") as f:   #open path and read into a variable to later use in our UI for display
-        #    lyrics = f.read()
-            
-        #print(lyrics_path)
+        with open(lyrics_path, "r") as f:   #open path and read into a variable to later use in our UI for display
+            lyrics = f.read()
         
-                    
-
+        split_lyrics = lyrics.split(" ")
+        new_lyrics = ""
+        for i in range(len(split_lyrics)):
+            if i % 5 == 0:
+                new_lyrics += " ".join(split_lyrics[i-5:i]) + "\n"         
+    
+        new_lyrics = new_lyrics.strip()
+            
         #Display the results on Tkinter Labels
         #========================================================================================================
         #Display BPM
@@ -286,8 +315,8 @@ class AnalysisPage(customtkinter.CTkFrame):
         self.genre_result = customtkinter.CTkLabel(master=self.genre_frame, text=genre_string, text_font=("Roboto Medium", -14))
         self.genre_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
         #Display Lyrics
-        #self.lyrics_box = customtkinter.CTkLabel(master = self.border_frame2, text = lyrics, text_font=("Roboto Medium", -12), height=100, corner_radius=6, fg_color = ("white", "gray38"))
-        #self.lyrics_box.grid(column=1, row=2, sticky ="nesw")        
+        self.lyrics_box = customtkinter.CTkLabel(master = self.border_frame2, text = new_lyrics, text_font=("Roboto Medium", -12), height=100, corner_radius=6, fg_color = ("white", "gray38"))
+        self.lyrics_box.grid(column=1, row=2, sticky ="nesw")        
 
 
     def __init__(self, parent, controller):
