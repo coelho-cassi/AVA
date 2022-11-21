@@ -1,0 +1,9 @@
+customtkinter
+pillow
+librosa
+text2emotion
+emoji==1.6.3
+spleeter
+whisper
+numba==0.56.4
+numpy==1.23.5
