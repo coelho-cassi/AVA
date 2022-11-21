@@ -267,7 +267,7 @@ class AnalysisPage(customtkinter.CTkFrame):
         songname = file
         command = "spleeter separate -d 900 -o audio_output " + songname
         subprocess.Popen(command,shell=True)
-        time.sleep(70)   
+        time.sleep(120)   
         print("Spleeter finished execution")
         
         #Transcribe vocal file into a text file
