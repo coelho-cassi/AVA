@@ -85,14 +85,24 @@ def detect_tempo(audioString, startingPoint=None, length=None): # starting/endin
     try:
         if (startingPoint == None or length == None):
             # Uses the librosa library to load the music file and determine BPM
-            y, sr = librosa.load(audioString)
-            onset_env = librosa.onset.onset_strength(y=y,sr=sr)
-            tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
+            try:
+                y, sr = librosa.load(audioString)
+                onset_env = librosa.onset.onset_strength(y=y,sr=sr)
+                tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
+            except ValueError:
+                y, sr = librosa.load(audioString,sr=None)
+                onset_env = librosa.onset.onset_strength(y=y,sr=sr)
+                tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
         else:
-            # Starting at offset, load duration length
-            y, sr = librosa.load(audioString, offset=startingPoint,duration=length)
-            onset_env = librosa.onset.onset_strength(y=y,sr=sr)
-            tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
+            try:
+                # Starting at offset, load duration length
+                y, sr = librosa.load(audioString, offset=startingPoint,duration=length)
+                onset_env = librosa.onset.onset_strength(y=y,sr=sr)
+                tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
+            except ValueError:
+                y, sr = librosa.load(audioString, offset=startingPoint,duration=length, sr=None)
+                onset_env = librosa.onset.onset_strength(y=y,sr=sr)
+                tempo = librosa.beat.tempo(onset_envelope=onset_env,sr=sr)
         return tempo
     except FileNotFoundError:
         retStr = 'Invalid FileName Given'
