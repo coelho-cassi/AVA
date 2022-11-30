@@ -8,7 +8,9 @@ from PIL import Image, ImageTk
 import time
 import os
 import shutil
+import threading
 from tkinter import filedialog
+from tkinter import ttk
 
 import tempoDetect
 import genreDetect
@@ -225,7 +227,15 @@ class OptionsPage(customtkinter.CTkFrame):
 
 #Define the Analysis Page
 class AnalysisPage(customtkinter.CTkFrame):
-
+    
+    def step2(self):
+        x = self.barVar.get()
+        if x<100:
+            self.barVar.set(x+10)
+            self.my_progress.update()
+        else:
+            print("Complete")
+        
     def get_results(self):
         #Function that calls genreDetect,tempoDetect,Text2Emotion to retrieve the results and displays them on the UI
         #========================================================================================================        
@@ -236,61 +246,116 @@ class AnalysisPage(customtkinter.CTkFrame):
         
         #Fetch MP3 File name using global variable song_name
         file = song_name
-
+        
         #Fetch BPM
         #========================================================================================================
+        print("Fetching BPM...")
+        
+        start_time = time.time()
+        
         bpm_song = tempoDetect.detect_tempo(file)
         bpm_result ="{:.2f}".format(bpm_song[0])
         
+        self.step2() #10
+        
         #store fetched BPM in the results array
         self.bpm_arr.append(bpm_result) #BPM   results[0]   Will always be 1 element
+               
+        end_time = time.time()
+        elapsed = end_time - start_time
+        print("BPM Fetched in %s" % elapsed)
         
-
+        self.step2() #20
+         
         #Fetch Genre 
         #========================================================================================================
+        print("Fetching Genre...")
+        
+        start_time = time.time()
+        
         genre_result = genreDetect.execute(file,30) # Splits example1.mp3 into 30 second seqments
+        
+        self.step2() #30
         
         #Genre has multiple elements
         for element in genre_result:
-            self.genre_arr.append(element)            #add fetched results onto results array
-            
-        print("1:" + str(self.genre_arr))
+            self.genre_arr.append(element)            #add fetched results onto results array         
             
         genre_string ='\n'.join(map(str, self.genre_arr)) #formats the array
-        #print("2:" +genre_string)
-        #genre_string = genre_string.split('\n')   #stores the results array in a formated string
-        #print("3:" +str(genre_string))
+        
+        end_time = time.time()
+        elapsed = end_time - start_time
+        print("Genre Fetched in %s" % elapsed)
+        
+        self.step2() #40
+        
         
         #Split Vocals/Instruments from file
+        #========================================================================================================
+        print("Splitting the vocals and instruments...")
+        
+        start_time = time.time()
+        
         temp_tuple = os.path.splitext(file) #create a tuple [song_name, .mp3]
+        self.step2() #50
         
         songname = file
         command = "spleeter separate -d 900 -o audio_output " + songname
         subprocess.Popen(command,shell=True)
-        time.sleep(120)   
-        print("Spleeter finished execution")
+        time.sleep(120)  
+        self.step2() #60
+        
+        end_time = time.time()
+        elapsed = end_time - start_time
+        print("Vocals and instruments split in %s" % elapsed)
+        
+        self.step2() #70
         
         #Transcribe vocal file into a text file
+        #========================================================================================================
+        print("Transcribing vocal file")
+        
+        start_time = time.time()
+        
         temp = str(temp_tuple[0])
         filein = "audio_output/" + temp + "/vocals.wav"
         fileout = "audio_output/"+ temp + "/lyrics.txt"
         model = whisper.load_model("small")
         result = model.transcribe(filein, fp16=False, language = 'English')    # takes ~5mins
-        #print(result["text"])
         vocal_output = open(fileout, "w")
         vocal_output.write(result["text"].strip())
         vocal_output.close()
         
+        end_time = time.time()
+        elapsed = end_time - start_time
+        print("Vocals transcribed in %s" % elapsed)
+        
+        self.step2() #80
+        
         #Fetch Mood
         #========================================================================================================  
+        print("Fetching Mood...")
+        
+        start_time2 = time.time()
+        
         lyrics_path = "audio_output/"+temp+"/lyrics.txt"        
         
         mood_result = Text2Emotion.checkLyrics(lyrics_path)
         self.mood_arr.append(mood_result)      #Mood  results[1] May be multiple elements
         
+        self.step2() #90
+        
+        end_time2 = time.time()
+        elapsed2 = end_time2 - start_time2
+        print("Mood fetched in %s" % elapsed2)
+        
+        self.step2() #100
         
         #Fetch Lyrics (Current naming convention for lyrics file is <mp3_file_name.txt>)
-        #========================================================================================================       
+        #======================================================================================================== 
+        print("Fetching Lyrics...")
+        
+        start_time = time.time()
         
         with open(lyrics_path, "r") as f:   #open path and read into a variable to later use in our UI for display
             lyrics = f.read()
@@ -302,6 +367,13 @@ class AnalysisPage(customtkinter.CTkFrame):
                 new_lyrics += " ".join(split_lyrics[i-5:i]) + "\n"         
     
         new_lyrics = new_lyrics.strip()
+        
+        self.step2() #100
+        
+        end_time2 = time.time()
+        elapsed2 = end_time2 - start_time2
+        print("Lyrics fetched in %s" % elapsed2)
+        
             
         #Display the results on Tkinter Labels
         #========================================================================================================
@@ -347,9 +419,11 @@ class AnalysisPage(customtkinter.CTkFrame):
         self.title_label.grid(column=1, row=0, sticky="nesw", padx=5, pady=5)
         
         
-        #progress bar for later implementation
-        #self.progressbar = customtkinter.CTkProgressBar(master=self.border_frame2)
-        #self.progressbar.grid(row=2, column=1, sticky="nesw")
+        #Progress Bar
+        self.barVar = DoubleVar()
+        self.barVar.set(0)
+        self.my_progress = ttk.Progressbar(master=self.border_frame2, mode = 'determinate', length=100, orient=HORIZONTAL, variable =self.barVar)
+        self.my_progress.grid(row=2, column=1, sticky="nesw")
 
         #Create mood, bpm, genre frames to lay on top
         self.mood_frame = customtkinter.CTkFrame(self.border_frame2)
