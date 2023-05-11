@@ -1,7 +1,7 @@
-# blender --background --python C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\runBlender.py -- C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\template.blend C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\test.blend C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\sample1.mp3 C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\vocals.wav
+# blender --background --python C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\runBlender.py -- C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\template.blend C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\test.blend C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\sample1.mp3 C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\vocals.wav C:\Users\jnchi\Documents\Current_Classes\CS-4391_(Senior_Project_II)\Workplace\accompaniment.wav
 
 # How to run:
-# blender --background --python [PATH TO PYTHON FILE] -- [PATH TO SRC .BLEND FILE] [PATH TO DEST .BLEND FILE] [PATH TO MAIN MP3 FILE] [PATH TO LYRIC MP3 FILE]
+# blender --background --python [PATH TO PYTHON FILE] -- [PATH TO SRC .BLEND FILE] [PATH TO DEST .BLEND FILE] [PATH TO MAIN MP3 FILE] [PATH TO LYRIC MP3 FILE] [PATH TO ACCOMPANIMENT WAV FILE]
 
 import os
 import sys
@@ -57,8 +57,14 @@ if __name__ == "__main__":
         get_context_area(bpy.context, c)
         bpy.ops.graph.sound_bake(c, filepath=os.path.abspath(lyricsFP))
         
+        # Bake Accompaniment to Driver
+        obj = bpy.data.objects["DriverShoulders"]
+        obj.select_set(True)
+        get_context_area(bpy.context, c)
+        bpy.ops.graph.sound_bake(c, filepath=os.path.abspath(accompFP))
+        
         # Bake Main Music to Head Rotation
-        obj = bpy.data.objects["Cube"]
+        obj = bpy.data.objects["Avatar"]
         obj.select_set(True)
         get_context_area(bpy.context, c)
         bpy.ops.graph.sound_bake(c,filepath=os.path.abspath(musicFP))    
