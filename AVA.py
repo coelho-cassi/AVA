@@ -13,9 +13,12 @@ from tkinter import filedialog
 from tkinter import ttk
 
 import tempoDetect
+# Add NEW GENRE DETECT
+from Dicts import genreDetect2
 import genreDetect
 import subprocess
 import whisper
+import executeCMD
 
 #Import Mood module from another folder:
 import sys
@@ -23,6 +26,9 @@ PROGRAM_DIR = os.path.dirname(os.path.abspath(sys.argv[0]))
 new_path = os.path.join(PROGRAM_DIR, "Text2Emotion")
 sys.path.insert(1, new_path)
 import Text2Emotion
+
+import csv
+from csv import DictWriter
 
 
 #Set the overall theme of our app
@@ -124,10 +130,13 @@ class HomePage(customtkinter.CTkFrame):
         #Open File method
         def open_file():
             global song_name
+            global new_name
             self.song = filedialog.askopenfilename(filetypes=(("mp3 Files", "*.mp3"), ))
             shutil.copy(self.song, os.getcwd())
             song_name = str(os.path.basename(self.song))
+            #new_name = "sample1.mp3"
             self.text = customtkinter.CTkLabel(self, text=song_name + " ...Successfully uploaded")
+            #os.rename(song_name, new_name)
             self.text.grid(row=2,column=1,columnspan = 1, sticky = "W")
 
         #Initialize and place the "Open file" button
@@ -161,6 +170,75 @@ class HomePage(customtkinter.CTkFrame):
 
 #Define the Options Page
 class OptionsPage(customtkinter.CTkFrame):
+
+    def enterData(self):
+        
+        global hValue       #hash value of artist+song string
+        global found        #boolean stating if hash value was found in csv file
+        global artistState  #string value of artist name
+        global songState    #string value of song name
+        global hValueString #string value of artist+song string
+        global numberSt
+        
+        found = False
+        
+        artistEntry.configure(state="disabled")
+        songEntry.configure(state="disabled")
+
+
+        artistState = artistEntry.get()
+        songState = songEntry.get()
+        
+        hValueString = artistState + songState
+        
+        #Create Unique Code for each song user enters
+        weight1 = 0
+        weight2 = 0
+        weight3 = 0
+        weight4 = 0
+        for element in hValueString:
+            if (element == 'a' or element == 'e' or element == 'i' or element == 'o' or element == 'u'):
+                weight1 = weight1 + 3
+            elif (element == 's' or element == 't' or element == 'c' or element == 'p' or element == 'r'):
+                weight4 = weight4 + 2
+            else: 
+                weight2 = weight2 + 7
+            weight3 = weight3 + 1
+        hValue = weight1 + weight2 + weight3 + weight4
+
+        print(artistState)
+        print(songState)
+        
+        #Search first
+        #===============
+        numberSt = hValue
+        
+        numberSt = str(numberSt)
+        print(numberSt)
+  
+        csv_file = csv.reader(open('results.csv', "r"))
+        
+        for row in csv_file:
+            if numberSt == row[0]:
+                found = True
+                
+        if found:
+            print("Song Found!")
+            self.found_result = customtkinter.CTkLabel(master=self, text="Found", font=("Roboto Medium", -14))
+            self.found_result.grid(row=6,column=2, columnspan=4, sticky = "W", pady =2)
+        else: 
+            print("Not Found!")
+            self.found_result = customtkinter.CTkLabel(master=self, text="Not Found", font=("Roboto Medium", -14))
+            self.found_result.grid(row=6,column=2, columnspan=4, sticky = "W", pady =2)
+        
+        #field_names = ['HASH','ARTIST','SONG']
+        #List = {'HASH': hValue, 'ARTIST': artistState, 'SONG': songState}
+        
+        #with open('results.csv', 'a') as f_object:
+        #    writer_object = DictWriter(f_object, fieldnames=field_names, lineterminator= '\n')
+        #    writer_object.writerow(List)
+        #    f_object.close()           
+     
     def __init__(self, parent, controller):
         customtkinter.CTkFrame.__init__(self, parent)
         label = customtkinter.CTkLabel(self, text="Options Page")
@@ -206,16 +284,6 @@ class OptionsPage(customtkinter.CTkFrame):
         #Run the animation 
         animation(self.count)
 
-        #=============================================================
-        #Button that takes us to Performance Mode
-        performance_button = customtkinter.CTkButton(
-            self,
-            text="Performance Mode",
-            command=lambda: controller.show_frame(PerformancePage),
-        )
-        performance_button.grid(row=5,column=2, columnspan=4, sticky = "W", pady =2)
-
-        #=============================================================
         #Button that takes us to Analysis Mode
         analysis_button = customtkinter.CTkButton(
             self,
@@ -223,6 +291,26 @@ class OptionsPage(customtkinter.CTkFrame):
             command=lambda: controller.show_frame(AnalysisPage),
         )
         analysis_button.grid(row=5,column=1, columnspan=4, sticky = "W", pady =2)
+        #=============================================================
+        global artistEntry
+        global songEntry
+        artistEntry = customtkinter.CTkEntry(self, placeholder_text="Artist: journey ")
+        artistEntry.grid(row=5,column=2, columnspan=4, sticky = "W", pady =2)
+        songEntry = customtkinter.CTkEntry(self, placeholder_text="Song: dontstopbelievin")
+        songEntry.grid(row=5,column=3, columnspan=4, sticky = "W", pady =2)
+        
+        #Button that enters the text
+        entry_button = customtkinter.CTkButton(
+            self,
+            text="Enter",
+            command=self.enterData
+        )
+        entry_button.grid(row=6,column=3, columnspan=4, sticky = "W", pady =2)
+        #=============================================================
+        
+        
+        
+
 
 
 #Define the Analysis Page
@@ -235,8 +323,55 @@ class AnalysisPage(customtkinter.CTkFrame):
             self.my_progress.update()
         else:
             print("Complete")
+            
+    def resultsFound(self):
+        print("I RAN")
+        
+        csv_file = csv.reader(open('results.csv', "r"))
+        
+        for row in csv_file:
+            if numberSt == row[0]:
+                bpmRes   = row[3]
+                moodRes  = row[4]
+                genreRes = row[5] 
+                
+        
+        lyrics_path = "audio_output/"+hValueString+"/lyrics.txt"
+
+        with open(lyrics_path, "r") as f:   #open path and read into a variable to later use in our UI for display
+            lyrics = f.read()
+        
+        split_lyrics = lyrics.split(" ")
+        new_lyrics = ""
+        for i in range(len(split_lyrics)):
+            if i % 5 == 0:
+                new_lyrics += " ".join(split_lyrics[i-5:i]) + "\n"         
+    
+        new_lyrics = new_lyrics.strip()        
+               
+        #Display the results on Tkinter Labels
+        #========================================================================================================
+        #Display BPM
+        self.BPM_result = customtkinter.CTkLabel(master=self.bpm_frame, text=bpmRes, font=("Roboto Medium", -14))
+        self.BPM_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
+        #Display mood
+        self.mood_result = customtkinter.CTkLabel(master=self.mood_frame, text=moodRes, font=("Roboto Medium", -14))
+        self.mood_result.grid(column=0, row=1, sticky="nwe", padx=15, pady=15)
+        #Display genre
+        self.genre_result = customtkinter.CTkLabel(master=self.genre_frame, text=genreRes, font=("Roboto Medium", -14))
+        self.genre_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
+        #Display Lyrics
+        self.lyrics_box = customtkinter.CTkLabel(master = self.border_frame2, text=new_lyrics, font=("Roboto Medium", -12), height=100, corner_radius=6, fg_color = ("white", "gray38"))
+        self.lyrics_box.grid(column=1, row=2, sticky ="nesw")     
+        #=============================================================
+
         
     def get_results(self):
+    
+        if found:
+            self.resultsFound()
+            return
+            
         #Function that calls genreDetect,tempoDetect,Text2Emotion to retrieve the results and displays them on the UI
         #========================================================================================================        
         #create an empty array that stores the fetched results
@@ -266,30 +401,7 @@ class AnalysisPage(customtkinter.CTkFrame):
         print("BPM Fetched in %s" % elapsed)
         
         self.step2() #20
-         
-        #Fetch Genre 
-        #========================================================================================================
-        print("Fetching Genre...")
-        
-        start_time = time.time()
-        
-        genre_result = genreDetect.execute(file,30) # Splits example1.mp3 into 30 second seqments
-        
-        self.step2() #30
-        
-        #Genre has multiple elements
-        for element in genre_result:
-            self.genre_arr.append(element)            #add fetched results onto results array         
-            
-        genre_string ='\n'.join(map(str, self.genre_arr)) #formats the array
-        
-        end_time = time.time()
-        elapsed = end_time - start_time
-        print("Genre Fetched in %s" % elapsed)
-        
-        self.step2() #40
-        
-        
+           
         #Split Vocals/Instruments from file
         #========================================================================================================
         print("Splitting the vocals and instruments...")
@@ -302,7 +414,7 @@ class AnalysisPage(customtkinter.CTkFrame):
         songname = file
         command = "spleeter separate -d 900 -o audio_output " + songname
         subprocess.Popen(command,shell=True)
-        time.sleep(120)  
+        time.sleep(180)  
         self.step2() #60
         
         end_time = time.time()
@@ -332,11 +444,35 @@ class AnalysisPage(customtkinter.CTkFrame):
         
         self.step2() #80
         
+        #Fetch Genre 
+        #========================================================================================================
+        print("Fetching Genre...")
+        
+        start_time = time.time()
+        
+        #genre_result = genreDetect.execute(file,30) # Splits example1.mp3 into 30 second seqments
+        genre_result = genreDetect2.execute(fileout)
+        
+        self.step2() #30
+        
+        #Genre has multiple elements
+        #for element in genre_result:
+        #    self.genre_arr.append(element)            #add fetched results onto results array         
+            
+        #genre_string ='\n'.join(map(str, self.genre_arr)) #formats the array
+        
+        end_time = time.time()
+        elapsed = end_time - start_time
+        print("Genre Fetched in %s" % elapsed)
+        
+        self.step2() #40
+        
         #Fetch Mood
         #========================================================================================================  
         print("Fetching Mood...")
         
         start_time2 = time.time()
+        
         
         lyrics_path = "audio_output/"+temp+"/lyrics.txt"        
         
@@ -378,17 +514,38 @@ class AnalysisPage(customtkinter.CTkFrame):
         #Display the results on Tkinter Labels
         #========================================================================================================
         #Display BPM
-        self.BPM_result = customtkinter.CTkLabel(master=self.bpm_frame, text=self.bpm_arr[0], text_font=("Roboto Medium", -14))
+        self.BPM_result = customtkinter.CTkLabel(master=self.bpm_frame, text=self.bpm_arr[0], font=("Roboto Medium", -14))
         self.BPM_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
         #Display mood
-        self.mood_result = customtkinter.CTkLabel(master=self.mood_frame, text=self.mood_arr[0], text_font=("Roboto Medium", -14))
+        self.mood_result = customtkinter.CTkLabel(master=self.mood_frame, text=self.mood_arr[0], font=("Roboto Medium", -14))
         self.mood_result.grid(column=0, row=1, sticky="nwe", padx=15, pady=15)
         #Display genre
-        self.genre_result = customtkinter.CTkLabel(master=self.genre_frame, text=genre_string, text_font=("Roboto Medium", -14))
+        self.genre_result = customtkinter.CTkLabel(master=self.genre_frame, text=genre_result, font=("Roboto Medium", -14))
         self.genre_result.grid(column=1, row=1, sticky="nwe", padx=15, pady=15)
         #Display Lyrics
-        self.lyrics_box = customtkinter.CTkLabel(master = self.border_frame2, text = new_lyrics, text_font=("Roboto Medium", -12), height=100, corner_radius=6, fg_color = ("white", "gray38"))
-        self.lyrics_box.grid(column=1, row=2, sticky ="nesw")        
+        self.lyrics_box = customtkinter.CTkLabel(master = self.border_frame2, text = new_lyrics, font=("Roboto Medium", -12), height=100, corner_radius=6, fg_color = ("white", "gray38"))
+        self.lyrics_box.grid(column=1, row=2, sticky ="nesw")     
+        #=============================================================
+        
+        #Add to the CSV File
+        #=============================================================
+        field_names = ['HASH','ARTIST','SONG','BPM','MOOD','GENRE']
+        List = {'HASH': numberSt, 'ARTIST': artistState, 'SONG': songState,'BPM': self.bpm_arr[0] ,'MOOD': self.mood_arr[0] ,'GENRE': genre_result}
+        
+        with open('results.csv', 'a') as f_object:
+            writer_object = DictWriter(f_object, fieldnames=field_names, lineterminator= '\n')
+            writer_object.writerow(List)
+            f_object.close()  
+            
+        # Make the name of the dir containing the lyrics traceable
+        file = song_name
+        temp_tuple = os.path.splitext(file) #create a tuple [song_name, .mp3]
+        temp = str(temp_tuple[0])
+        currDir = os.getcwd()
+        
+        old_folder = currDir + "\\audio_output\\" + temp +"\\"
+        new_folder = currDir +"\\audio_output\\" + hValueString +"\\"
+        os.rename(old_folder, new_folder)
 
 
     def __init__(self, parent, controller):
@@ -413,10 +570,21 @@ class AnalysisPage(customtkinter.CTkFrame):
             self.border_frame2, text="Analyze", command=self.get_results
         )
         analyze_button.grid(column = 1, row = 6, sticky = "nesw", pady=5)
+        
+        #Button that takes us to Performance Mode
+        performance_button = customtkinter.CTkButton(
+            self,
+            text="Performance Mode",
+            command=lambda: controller.show_frame(PerformancePage),
+        )
+        performance_button.grid(row=8,column=2, columnspan=4, sticky = "E", pady =2)
+
+        #=============================================================        
+
 
         #title
-        self.title_label = customtkinter.CTkLabel(master=self.border_frame2, text="Analysis", text_font=("Roboto Medium", -20))
-        self.title_label.grid(column=1, row=0, sticky="nesw", padx=5, pady=5)
+        self.title_label = customtkinter.CTkLabel(master=self.border_frame2, text="Analysis", font=("Roboto Medium", -20))
+        self.title_label.grid(column=0, row=0, sticky="nesw", padx=5, pady=5)
         
         
         #Progress Bar
@@ -444,11 +612,11 @@ class AnalysisPage(customtkinter.CTkFrame):
         self.bpm_frame.columnconfigure(0, weight=1)
 
         #Create Labels within each mini-frame
-        self.mood_label = customtkinter.CTkLabel(master=self.mood_frame, text="Mood", text_font=("Roboto Medium", -18))
+        self.mood_label = customtkinter.CTkLabel(master=self.mood_frame, text="Mood", font=("Roboto Medium", -18))
         self.mood_label.grid(column=0, row=0, sticky="nwe", padx=15, pady=15)
-        self.bpm_label = customtkinter.CTkLabel(master=self.bpm_frame, text="BPM", text_font=("Roboto Medium", -18))
+        self.bpm_label = customtkinter.CTkLabel(master=self.bpm_frame, text="BPM", font=("Roboto Medium", -18))
         self.bpm_label.grid(column=1, row=0, sticky="nwe", padx=15, pady=15)
-        self.genre_label = customtkinter.CTkLabel(master=self.genre_frame, text="Genre", text_font=("Roboto Medium", -18))
+        self.genre_label = customtkinter.CTkLabel(master=self.genre_frame, text="Genre", font=("Roboto Medium", -18))
         self.genre_label.grid(column=1, row=0, sticky="nwe", padx=15, pady=15)
 
 
@@ -463,15 +631,56 @@ class AnalysisPage(customtkinter.CTkFrame):
 
 
 class PerformancePage(customtkinter.CTkFrame):
+
+    def get_performance(self):
+        print("in performance gui")
+        # Make the name of the dir containing vocals.wav more generic
+        
+        currDir = os.getcwd()
+        
+        old_folder = currDir + "\\audio_output\\" + hValueString +"\\"
+        new_folder = currDir +"\\audio_output\\sample1\\"
+        os.rename(old_folder, new_folder)
+        
+        # Rename mp3 to sample1.mp3 so it is more generic
+        new_name = "sample1.mp3"
+        os.rename(song_name, new_name)
+        currDir = os.getcwd()
+        currDir = currDir.replace("\\", "\\\\")
+        executeCMD.execute(currDir)
+        
+        # Switch Back folder Name
+        currDir = os.getcwd()
+        
+        old_folder = currDir + "\\audio_output\\sample1\\"
+        new_folder = currDir +"\\audio_output\\" + hValueString +"\\"
+        os.rename(old_folder, new_folder)
+        
+        # Switch Back file name
+        new_name = song_name + ".mp3"
+        old_name = "sample1.mp3"
+        os.rename(old_name, new_name)
+        currDir = os.getcwd()
+        currDir = currDir.replace("\\", "\\\\")
+        executeCMD.execute(currDir)
+        
+
+
     def __init__(self, parent, controller):
         customtkinter.CTkFrame.__init__(self, parent)
-        label = customtkinter.CTkLabel(self, text="Performance Page, we did it!")
-        label.pack(padx=10, pady=10)
+        #label = customtkinter.CTkLabel(self, text="Performance Page, we did it!")
+        #label.pack(padx=10, pady=10)
 
         switch_window_button = customtkinter.CTkButton(
             self, text="Return to Home Page", command=lambda: controller.show_frame(HomePage)
         )
-        switch_window_button.pack(side="bottom", fill=tk.X)
+        switch_window_button.grid(row=8,column=0, columnspan=4, sticky= "sw")
+        
+        #Create a button that sparks the program to create the mp4
+        perform_button = customtkinter.CTkButton(
+            self, text="Perform", command=self.get_performance
+        )
+        perform_button.grid(column = 1, row = 6, sticky = "nesw", pady=5)
 
 
 if __name__ == "__main__":
