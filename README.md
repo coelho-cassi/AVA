@@ -10,10 +10,12 @@ pip install git+https://github.com/openai/whisper.git
 pip install --upgrade numpy==1.23.5
 pip install --upgrade emoji==1.6.3
 pip install --upgrade numba==0.56.4
+pip install --upgrade moviepy==1.0.3
 
-NOTE: To execute the program, two preconditions must be met:
+NOTE: To execute the program, three preconditions must be met:
 
 ffmpeg is installed
+Blender 3.4 is installed
 nltk has downloaded the required resources
 
 To install ffmpeg follow this tutorial:
